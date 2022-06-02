@@ -1,0 +1,126 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'eclipse'
+    id 'com.google.osdetector' version '1.7.0'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
+    id "org.beryx.jlink" version "2.24.2"
+    id 'com.gluonhq.gluonfx-gradle-plugin' version '1.0.13'
+}
+
+eclipse {
+    project {
+        natures 'org.eclipse.buildship.core.gradleprojectnature'
+    }
+    classpath {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+mainClassName = 'hellofx.HelloFX'
+application {
+    mainClass = 'hellofx.HelloFX'
+    applicationDefaultJvmArgs = [
+        '-Djdk.gtk.verbose=true',
+        '-Djavafx.verbose=true',
+        '-Dprism.verbose=true'
+    ]
+}
+
+final def dateTime = LocalDateTime.now()
+final def buildDateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss")
+final def releaseFormatter = DateTimeFormatter.ofPattern("yyyMMddHHmmss")
+ext {
+    buildDateTime = dateTime.format(buildDateFormatter)
+
+    osName = osdetector.os
+    hostName = InetAddress.getLocalHost().getHostName()
+    userName = System.getProperty('user.name')
+    userHome = System.getProperty('user.home')
+    createdBy = System.properties['java.version'] + " (" + System.properties['java.vendor'] + " " + System.properties['java.vm.version'] + ")"
+
+    buildRelease = project.hasProperty("buildRelease")
+    if (buildRelease) {
+        project.version = project.version + "-" + project.release
+    } else {
+        project.version = project.version + "-SNAPSHOT"
+        project.release = "SNAPSHOT" + dateTime.format(releaseFormatter)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+    withJavadocJar()
+    withSourcesJar()
+}
+
+javafx {
+    version = "17.0.2"
+    modules = [
+        'javafx.controls',
+        'javafx.graphics',
+        'javafx.fxml',
+        'javafx.media',
+        'javafx.web',
+        'javafx.swing'
+    ]
+}
+
+jar {
+    manifest {
+        attributes(
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version,
+            'Implementation-Vendor': project.vendorName,
+            'Implementation-Vendor-Id': project.group,
+            'Specification-Title': project.name,
+            'Specification-Version': project.version,
+            'Specification-Vendor': project.vendorName,
+            'Application-Name': applicationName,
+            'Main-Class': project.application.mainClass,
+            'Class-Path': configurations.compileClasspath.collect { it.getName() }.join(' '),
+            'Built-By': userName,
+            'Build-Time': buildDateTime,
+            'Created-By': createdBy,
+            'Permissions': 'all-permissions',
+            'Codebase': '*'
+        )
+    }
+}
+
+/* Test configuration */
+test {
+    useJUnitPlatform()
+}
+
+jlink {
+    launcher {
+        name = 'HelloFX'
+    }
+}
+
+gluonfx {
+    verbose = true
+
+    javaStaticSdkVersion = "17"
+    javafxStaticSdkVersion = "17"
+}

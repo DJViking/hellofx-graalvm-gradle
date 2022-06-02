@@ -1,0 +1,14 @@
+.settings
+bin
+target
+.project
+.classpath
+.directory
+.checkstyle
+.eclipse-pmd
+*.log
+*.log.*
+.gradle
+/classes
+out/
+/build/
