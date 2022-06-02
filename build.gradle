@@ -9,7 +9,6 @@ plugins {
     id 'eclipse'
     id 'com.google.osdetector' version '1.7.0'
     id 'org.openjfx.javafxplugin' version '0.0.10'
-    id "org.beryx.jlink" version "2.24.2"
     id 'com.gluonhq.gluonfx-gradle-plugin' version '1.0.13'
 }
 
@@ -23,9 +22,9 @@ eclipse {
     }
 }
 
-mainClassName = 'hellofx.HelloFX'
+mainClassName = 'hellofx.HelloFXLauncher'
 application {
-    mainClass = 'hellofx.HelloFX'
+    mainClass = 'hellofx.HelloFXLauncher'
     applicationDefaultJvmArgs = [
         '-Djdk.gtk.verbose=true',
         '-Djavafx.verbose=true',
@@ -110,12 +109,6 @@ jar {
 /* Test configuration */
 test {
     useJUnitPlatform()
-}
-
-jlink {
-    launcher {
-        name = 'HelloFX'
-    }
 }
 
 gluonfx {
