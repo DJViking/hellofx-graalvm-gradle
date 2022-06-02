@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Don't forget to set system property:
+  -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+  to make all loggers asynchronous.
+-->
+<Configuration status="INFO">
+  <Properties>
+    <Property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] %logger %m%n"/>
+  </Properties>
+  <Appenders>
+    <Console name="console" target="SYSTEM_OUT" follow="true">
+      <PatternLayout pattern="${pattern}"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="hellofx" level="INFO" includeLocation="false" additivity="false">
+      <AppenderRef ref="console"/>
+    </Logger>
+    <Root level="INFO" includeLocation="false">
+      <AppenderRef ref="console"/>
+    </Root>
+  </Loggers>
+</Configuration>

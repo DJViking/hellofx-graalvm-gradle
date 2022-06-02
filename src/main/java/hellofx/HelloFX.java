@@ -9,7 +9,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class HelloFX extends Application {
+
+    private static Logger logger = LogManager.getLogger(HelloFX.class);
 
     public static void main(String[] args) {
         HelloFX.launch(args);
@@ -17,6 +22,7 @@ public class HelloFX extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        logger.info("HelloFX Application starting");
         String javaVersion = System.getProperty("java.version");
         String javafxVersion = System.getProperty("javafx.version");
         Label label = new Label(
@@ -34,10 +40,13 @@ public class HelloFX extends Application {
         scene.getStylesheets().add(HelloFX.class.getResource("styles.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
+
+        logger.info("HelloFX Application started");
     }
 
     @Override
     public void stop() throws Exception {
+        logger.info("HelloFX Application stopping");
         System.exit(0);
     }
 
